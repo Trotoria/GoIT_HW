@@ -104,7 +104,7 @@ def sort_files(path):
 
         if is_audio(path):
 
-            audio_path = main().joinpath("Audio")
+            audio_path = get_path().joinpath("Audio")
             audio_path.mkdir(exist_ok=True)
 
             new_name = audio_path.joinpath(normalize(path.stem) + path.suffix)
@@ -122,7 +122,7 @@ def sort_files(path):
 
         elif is_image(path):
 
-            images_path = main().joinpath("Images")
+            images_path = get_path().joinpath("Images")
             images_path.mkdir(exist_ok=True)
 
             new_name = images_path.joinpath(normalize(path.stem) + path.suffix)
@@ -140,7 +140,7 @@ def sort_files(path):
 
         elif is_video(path):
 
-            video_path = main().joinpath("Video")
+            video_path = get_path().joinpath("Video")
             video_path.mkdir(exist_ok=True)
 
             new_name = video_path.joinpath(normalize(path.stem) + path.suffix)
@@ -158,7 +158,7 @@ def sort_files(path):
 
         elif is_doc(path):
 
-            doc_path = main().joinpath("Documents")
+            doc_path = get_path().joinpath("Documents")
             doc_path.mkdir(exist_ok=True)
 
             new_name = doc_path.joinpath(normalize(path.stem) + path.suffix)
@@ -176,7 +176,7 @@ def sort_files(path):
 
         elif is_book(path):
 
-            book_path = main().joinpath("Books")
+            book_path = get_path().joinpath("Books")
             book_path.mkdir(exist_ok=True)
 
             new_name = book_path.joinpath(normalize(path.stem) + path.suffix)
@@ -194,7 +194,7 @@ def sort_files(path):
 
         elif is_archive(path):
 
-            archive_path = main().joinpath("Archives")
+            archive_path = get_path().joinpath("Archives")
             archive_path.mkdir(exist_ok=True)
 
             try:
@@ -240,27 +240,27 @@ def delete_empty(path):
 
 
 def is_audio(file_path):
-    return file_path.suffix in audio
+    return (file_path.suffix).lower() in audio
 
 
 def is_image(file_path):
-    return file_path.suffix in image
+    return (file_path.suffix).lower() in image
 
 
 def is_video(file_path):
-    return file_path.suffix in video
+    return (file_path.suffix).lower() in video
 
 
 def is_doc(file_path):
-    return file_path.suffix in doc
+    return (file_path.suffix).lower() in doc
 
 
 def is_book(file_path):
-    return file_path.suffix in book
+    return (file_path.suffix).lower() in book
 
 
 def is_archive(file_path):
-    return file_path.suffix in archive
+    return (file_path.suffix).lower() in archive
 
 
 if __name__ == "__main__":

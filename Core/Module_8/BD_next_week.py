@@ -37,11 +37,11 @@ def get_birthdays_per_week(users):
 
     for date in next_week:
 
-        for person in users_list:
+        for person in users:
 
             if person["birthday"].month == date.month and person["birthday"].day == date.day:
 
-                if date.isoweekday() == 6 or date.isoweekday() == 7:
+                if date.isoweekday() in (6, 7):
                     birthdays["Monday"].append(person["name"])
 
                 else:

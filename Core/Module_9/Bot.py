@@ -6,24 +6,26 @@ def input_error(handler):
     def wrapper(*args, **kwargs):
 
         try:
-            result = handler(*args, **kwargs)
-            return result
+            return handler(*args, **kwargs)
 
         except KeyError:
             print("Sorry, I don't know this person. ")
 
         except ValueError:
-            print("ValueError. Try again")
+            print("Sorry, I don't know this comand.")
 
         except IndexError:
-            print("Sorry, I don't know this comand.")
+            print("I need more information.")
 
     return wrapper
 
 
 def main():
-    string = input("-> ")
-    result = get_command(string)
+    user_input = input("-> ")
+
+    words = user_input.split()
+    all_phrases = get_phrases(words)
+    result = run_handler(all_phrases, words)
 
     if result:
         print(result)
@@ -41,22 +43,29 @@ def quit_func(*args):
     quit()
 
 
-def get_command(string):
-    user_input = string.lower()
-    words_list = user_input.split()
+def get_phrases(words):
+    all_phrases = [word.lower() for word in words]
 
-    for i in range(len(words_list)-1):
-        words_list.append(words_list[i] + " " + words_list[i+1])
+    for i in range(len(words)-1):
+        all_phrases.append((words[i] + " " + words[i+1]).lower())
 
-    for command in words_list:
-        if command in COMMANDS:
-
-            return COMMANDS[command](string)
+    return all_phrases
 
 
 @input_error
-def add_contact(string):
-    words = string.split()
+def run_handler(all_phrases, words):
+
+    for command in all_phrases:
+
+        if command in COMMANDS:
+            return COMMANDS[command](words)
+
+        else:
+            raise ValueError
+
+
+@input_error
+def add_contact(words):
     name = words[1]
     phone = words[2]
     CONTACTS[name] = phone
@@ -66,8 +75,7 @@ def add_contact(string):
 
 
 @input_error
-def find_contact(string):
-    words = string.split()
+def find_contact(words):
     name = words[1]
     result = f'{name}: {CONTACTS[name]}'
 
@@ -75,13 +83,16 @@ def find_contact(string):
 
 
 @input_error
-def change_contact(string):
-    words = string.split()
+def change_contact(words):
     name = words[1]
     phone = words[2]
-    CONTACTS[name] = phone
-    result = f'Phone number was changed: {name} {CONTACTS[name]}'
-    return result
+    if name in CONTACTS:
+        CONTACTS[name] = phone
+        result = f'Phone number was changed: {name} {CONTACTS[name]}'
+        return result
+
+    else:
+        raise KeyError
 
 
 @input_error
@@ -90,7 +101,8 @@ def show_contacts(*args):
     for name, phone in CONTACTS.items():
         print(name, phone)
 
-    result = "There are all your contacts"
+    result = "These are all your contacts"
+
     return result
 
 

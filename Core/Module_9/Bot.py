@@ -1,6 +1,21 @@
 CONTACTS = {}
 
 
+def main():
+    while True:
+        user_input = input("-> ")
+
+        words = user_input.split()
+        all_phrases = get_phrases(words)
+        result = run_handler(all_phrases, words)
+
+        if result:
+            print(result)
+
+        if not result:
+            print("Try again.")
+
+
 def input_error(handler):
 
     def wrapper(*args, **kwargs):
@@ -20,29 +35,6 @@ def input_error(handler):
     return wrapper
 
 
-def main():
-    user_input = input("-> ")
-
-    words = user_input.split()
-    all_phrases = get_phrases(words)
-    result = run_handler(all_phrases, words)
-
-    if result:
-        print(result)
-
-    if not result:
-        print("Try again.")
-
-
-def hello(*args):
-    return "Hello! How can I help you?"
-
-
-def quit_func(*args):
-    print("Good bye. Hope to see you soon")
-    quit()
-
-
 def get_phrases(words):
     all_phrases = [word.lower() for word in words]
 
@@ -54,14 +46,37 @@ def get_phrases(words):
 
 @input_error
 def run_handler(all_phrases, words):
+    commands = {
+        "hello": hello,
+        "hi": hello,
+        "exit": quit_func,
+        "quit": quit_func,
+        "end": quit_func,
+        "bye": quit_func,
+        "good bye": quit_func,
+        "add": add_contact,
+        "phone": find_contact,
+        "show all": show_contacts,
+        "change": change_contact,
+        "find": find_contact
+    }
 
     for command in all_phrases:
 
-        if command in COMMANDS:
-            return COMMANDS[command](words)
+        if command in commands:
+            return commands[command](words)
 
         else:
             raise ValueError
+
+
+def hello(*args):
+    return "Hello! How can I help you?"
+
+
+def quit_func(*args):
+    print("Good bye. Hope to see you soon")
+    quit()
 
 
 @input_error
@@ -86,6 +101,7 @@ def find_contact(words):
 def change_contact(words):
     name = words[1]
     phone = words[2]
+
     if name in CONTACTS:
         CONTACTS[name] = phone
         result = f'Phone number was changed: {name} {CONTACTS[name]}'
@@ -106,21 +122,5 @@ def show_contacts(*args):
     return result
 
 
-COMMANDS = {
-    "hello": hello,
-    "hi": hello,
-    "exit": quit_func,
-    "quit": quit_func,
-    "end": quit_func,
-    "bye": quit_func,
-    "good bye": quit_func,
-    "add": add_contact,
-    "phone": find_contact,
-    "show all": show_contacts,
-    "change": change_contact,
-    "find": find_contact
-}
-
 if __name__ == "__main__":
-    while True:
-        main()
+    main()

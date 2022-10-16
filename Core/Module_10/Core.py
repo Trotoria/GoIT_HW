@@ -37,8 +37,8 @@ class Record:
         self.phones.remove(Phone(old_phone).value)
         self.add_phone(Phone(new_phone).value)
 
-    def add_email(self, phone):
-        self.phones.append(Email(email).value)
+    def add_email(self, email):
+        self.emails.append(Email(email).value)
 
 
 class Field:

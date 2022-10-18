@@ -1,3 +1,4 @@
+import email
 from Core import AddressBook, Record
 
 
@@ -58,14 +59,18 @@ def run_handler(all_phrases, words):
         "bye": quit_func,
         "good bye": quit_func,
         "add contact": add_contact,
-
         "add phone": add_phone,
         "add email": add_email,
 
-        "phone": find_contact,
+        "find name": find_contact,
+        "find phone": find_by_phone,
+        "find email": find_by_email,
+
+        "remove phone": remove_phone,
+
         "show all": show_contacts,
-        "change": change_contact,
-        "find": find_contact
+        "change phone": change_phone
+
     }
 
     for command in all_phrases:
@@ -117,31 +122,43 @@ def add_email(words):
 
 @input_error
 def find_contact(words):
-    name = words[1]
-    result = f'{name}: {CONTACTS[name]}'
+    name = ''.join(words)
+    return CONTACTS.find_contact(name)
 
+
+@input_error
+def find_by_phone(words):
+    phone = ''.join(words)
+    return CONTACTS.find_by_phone(phone)
+
+
+@input_error
+def find_by_email(words):
+    email = ''.join(words)
+    return CONTACTS.find_by_email(email)
+
+
+@input_error
+def change_phone(words):
+    name, old_phone, new_phone = words
+    CONTACTS[name].change_phone(old_phone, new_phone)
+    result = f'{name} Phone number {old_phone} was changed to {new_phone}'
     return result
 
 
 @input_error
-def change_contact(words):
-    name = words[1]
-    phone = words[2]
-
-    if name in CONTACTS:
-        CONTACTS[name] = phone
-        result = f'Phone number was changed: {name} {CONTACTS[name]}'
-        return result
-
-    else:
-        raise KeyError
+def remove_phone(words):
+    name, phone = words
+    CONTACTS[name].remove_phone(phone)
+    result = f'Phone number {phone} was removed from contact {name}'
+    return result
 
 
 @input_error
 def show_contacts(*args):
 
-    for name, phone in CONTACTS.items():
-        print(name, phone.value)
+    for _, contact in CONTACTS.items():
+        print(contact)
 
     result = "These are all your contacts"
 

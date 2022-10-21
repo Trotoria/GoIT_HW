@@ -61,7 +61,9 @@ class Record:
         self.emails.append(Email(email))
 
     def remove_email(self, email):
-        self.phones.remove(Email(email))
+        for email_address in self.emails:
+            if email == email_address.value:
+                self.emails.remove(email_address)
 
 
 class Field:

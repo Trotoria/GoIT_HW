@@ -10,8 +10,18 @@ class AddressBook(UserDict):
         return self.data
 
     def iterator(self):
-        for _, value in self.data.items():
-            yield value
+        records = []
+
+        for record in self.data.values():
+
+            if len(records) >= self.N:
+                yield records
+                records = []
+
+            records.append(record)
+
+        if records:
+            yield records
 
     def add_record(self, record):
         self.data[record.name.value] = record

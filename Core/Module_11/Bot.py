@@ -181,7 +181,15 @@ def show_contacts(*args):
 
     return result
 
+# @input_error
 
+
+def show_pages(*args):
+    print(next(CONTACTS.iterator()))
+    return f"Page"
+
+
+"""
 # @input_error
 def show_pages(*args):
 
@@ -200,6 +208,7 @@ def show_pages(*args):
         CONTACTS.page = 0
 
         return f'It was last page'
+"""
 
 
 if __name__ == "__main__":

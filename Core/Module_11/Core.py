@@ -6,22 +6,9 @@ class AddressBook(UserDict):
     N = 2
     page = 0
 
-    def __iter__(self):
-        return self.data
-
     def iterator(self):
-        records = []
-
         for record in self.data.values():
-
-            if len(records) >= self.N:
-                yield records
-                records = []
-
-            records.append(record)
-
-        if records:
-            yield records
+            yield record
 
     def add_record(self, record):
         self.data[record.name.value] = record

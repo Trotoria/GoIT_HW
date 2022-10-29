@@ -1,4 +1,7 @@
-   def __iter__(self):
+   from email import generator
+
+
+def __iter__(self):
         return self.data
 
     def __next__(self):
@@ -50,14 +53,29 @@ def show_pages(*args):
         CONTACTS.page += 1
 
         for _ in range(CONTACTS.N):
-            print(next(CONTACTS.iterator()))
+            print(next(generator))
 
         return f'Page {CONTACTS.page}'
 
     elif ((len(CONTACTS) - CONTACTS.page*CONTACTS.N) // CONTACTS.N) == 0:
         for _ in range(len(CONTACTS) - CONTACTS.page*CONTACTS.N):
-            print(next(CONTACTS.iterator()))
+            print(next(generator))
 
         CONTACTS.page = 0
 
         return f'It was last page'
+
+
+    def iterator(self):
+        records = []
+
+        for record in self.data.values():
+
+            if len(records) >= self.N:
+                yield records
+                records = []
+
+            records.append(record)
+
+        if records:
+            yield records

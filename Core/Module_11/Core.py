@@ -140,6 +140,8 @@ class Phone(Field):
             self.__value = new_value
 
         else:
+            print(
+                "Phone must be not less than 6 digits and contain only digits and sings: +, -, (, )")
             raise TypeError
 
 
@@ -157,12 +159,13 @@ class Birthday(Field):
 
     @value.setter
     def value(self, value):
-        if len(value) == 9:
+        try:
             birthday = datetime.strptime(value, "%d%b%Y")
             value = birthday.date()
             self.__value = value
 
-        else:
+        except ValueError:
+            print("Birthday format: ddmmyyyy (01Jan1900) ")
             raise TypeError
 
     def __repr__(self) -> str:

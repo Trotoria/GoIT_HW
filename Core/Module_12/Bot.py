@@ -1,8 +1,8 @@
-from tkinter import N
 from Core import AddressBook, Record
 
 
 CONTACTS = AddressBook()
+generator = CONTACTS.iterator()
 
 
 def main():
@@ -37,7 +37,7 @@ def input_error(handler):
             print("I need more information.")
 
         except TypeError:
-            print("Wrong information format.")
+            print("You entered information in wrong format.")
 
     return wrapper
 
@@ -51,7 +51,7 @@ def get_phrases(words):
     return all_phrases
 
 
-# @input_error
+@input_error
 def run_handler(all_phrases, words):
     commands = {
         "hello": hello,
@@ -66,6 +66,7 @@ def run_handler(all_phrases, words):
         "add email": add_email,
         "add birthday": add_birthday,
         "show birthday": show_birthday,
+        "find all": find_all,
         "find name": find_contact,
         "find phone": find_by_phone,
         "find email": find_by_email,
@@ -85,15 +86,21 @@ def run_handler(all_phrases, words):
 
 
 def hello(*args):
+    try:
+        CONTACTS.read_from_file()
+    except:
+        pass
+
     return "Hello! How can I help you?"
 
 
 def quit_func(*args):
+    CONTACTS.save_to_file()
     print("Good bye. Hope to see you soon")
     quit()
 
 
-# @input_error
+@input_error
 def add_contact(words):
     record = Record(*words)
     CONTACTS.add_record(record)
@@ -103,7 +110,7 @@ def add_contact(words):
     return result
 
 
-# @input_error
+@input_error
 def add_phone(words):
     name, phone = words
     CONTACTS[name].add_phone(phone)
@@ -112,16 +119,15 @@ def add_phone(words):
     return result
 
 
-# @input_error
+@input_error
 def add_birthday(words):
     name, birthday = words
     CONTACTS[name].add_birthday(birthday)
     result = f" Contact {name} birthday: {CONTACTS[name].birthday.value} added to your Address Book."
     return result
 
-# @input_error
 
-
+@input_error
 def add_email(words):
     name, email = words
     CONTACTS[name].add_email(email)
@@ -131,31 +137,38 @@ def add_email(words):
     return result
 
 
-# @input_error
+@input_error
 def show_birthday(words):
     name = ''.join(words)
     return CONTACTS[name].days_to_birthday()
 
 
-# @input_error
+@input_error
+def find_all(words):
+    user_input = ''.join(words)
+    print(user_input)
+    return CONTACTS.find_all(user_input)
+
+
+@input_error
 def find_contact(words):
     name = ''.join(words)
     return CONTACTS.find_contact(name)
 
 
-# @input_error
+@input_error
 def find_by_phone(words):
     phone = ''.join(words)
     return CONTACTS.find_by_phone(phone)
 
 
-# @input_error
+@input_error
 def find_by_email(words):
     email = ''.join(words)
     return CONTACTS.find_by_email(email)
 
 
-# @input_error
+@input_error
 def change_phone(words):
     name, old_phone, new_phone = words
     CONTACTS[name].change_phone(old_phone, new_phone)
@@ -163,7 +176,7 @@ def change_phone(words):
     return result
 
 
-# @input_error
+@input_error
 def remove_phone(words):
     name, phone = words
     CONTACTS[name].remove_phone(phone)
@@ -171,7 +184,7 @@ def remove_phone(words):
     return result
 
 
-# @input_error
+@input_error
 def show_contacts(*args):
 
     for _, contact in CONTACTS.items():
@@ -181,34 +194,21 @@ def show_contacts(*args):
 
     return result
 
-# @input_error
 
-
+@input_error
 def show_pages(*args):
-    print(next(CONTACTS.iterator()))
-    return f"Page"
+    global generator
+    CONTACTS.page += 1
+    for _ in range(CONTACTS.N):
+        try:
+            print(next(generator))
 
+        except StopIteration:
+            CONTACTS.page = 0
+            generator = CONTACTS.iterator()
+            return 'No more contacts'
 
-"""
-# @input_error
-def show_pages(*args):
-
-    if ((len(CONTACTS) - CONTACTS.page*CONTACTS.N) // CONTACTS.N) != 0:
-        CONTACTS.page += 1
-
-        for _ in range(CONTACTS.N):
-            print(next(CONTACTS.iterator()))
-
-        return f'Page {CONTACTS.page}'
-
-    elif ((len(CONTACTS) - CONTACTS.page*CONTACTS.N) // CONTACTS.N) == 0:
-        for _ in range(len(CONTACTS) - CONTACTS.page*CONTACTS.N):
-            print(next(CONTACTS.iterator()))
-
-        CONTACTS.page = 0
-
-        return f'It was last page'
-"""
+    return f'Page {CONTACTS.page}'
 
 
 if __name__ == "__main__":
